@@ -1,0 +1,39 @@
+ 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Capitals</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    {% for flashcard in flashcards %}
+    <h1>{{ flashcard['question'] }}?</h1>
+    <div class="cards">
+        <div class="flashcard">
+            <div>
+                <div class="front">
+                    <p>{{ flashcard['answer'] }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    <h2>Add a New Flashcard</h2>
+    <form action="/add_flashcard" method="post">
+        <label for="question">Question:</label>
+        <input type="text" id="question" name="question" required>
+        <br>
+        <label for="answer">Answer:</label>
+        <input type="text" id="answer" name="answer" required>
+        <br>
+        <button type="submit">Add Flashcard</button>
+    </form>
+</div>
+</body>
+</html>

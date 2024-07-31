@@ -1,0 +1,19 @@
+version: '3.8'  # Specify the version of the Docker Compose file format
+
+services:                    # Define the services/containers to be run
+  web:                       # Define the 'web' service
+    build:                   # Configuration for building the 'web' service
+      context: .             # Use the current directory as the build context
+    command: ["pytest"]      # Run the 'pytest' command when the container starts
+    depends_on:              # Define dependencies for the 'web' service
+      - mongo                # 'web' service depends on the 'mongo' service
+
+  mongo:                     # Define the 'mongo' service
+    image: mongo:latest      # Use the latest version of the 'mongo' image
+    ports:                   # Expose ports
+      - "27017:27017"        # Map port 27017 on the host to port 27017 on the container
+    volumes:                 # Define volumes to be mounted
+      - mongo-data:/data/db  # Mount the 'mongo-data' volume to the '/data/db' directory in the container
+
+volumes:                     # Define named volumes
+  mongo-data:                # Create a named volume 'mongo-data'

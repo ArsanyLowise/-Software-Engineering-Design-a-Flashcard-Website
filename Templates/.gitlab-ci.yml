@@ -1,0 +1,40 @@
+# Use the latest Docker image to run the CI jobs
+image: docker:latest
+
+# Define services required for the CI jobs, using Docker-in-Docker to allow Docker commands
+services:
+  - docker:dind
+
+# Set environment variables for the CI jobs
+variables:
+  DOCKER_DRIVER: overlay2  # Use overlay2 storage driver for Docker
+
+# Define the stages of the pipeline
+stages:
+  - build  # Build stage for building Docker images
+  - test   # Test stage for running tests
+  - deploy # Deploy stage for deploying the application
+
+# Commands to run before each job in the script section
+before_script:
+  - docker info  # Print Docker system-wide information
+
+# Job for building Docker images
+build:
+  stage: build  # Assign this job to the build stage
+  script:
+    - docker-compose -f docker-compose.ci.yml build  # Build the Docker images using docker-compose
+
+# Job for running tests
+test:
+  stage: test  # Assign this job to the test stage
+  script:
+    - docker-compose -f docker-compose.ci.yml up -d  # Start the services defined in the docker-compose file
+    - docker-compose -f docker-compose.ci.yml run web pytest tests/  # Run the tests using pytest in the 'web' service
+    - docker-compose -f docker-compose.ci.yml down  # Stop and remove the services
+
+# Job for deploying the application
+deploy:
+  stage: deploy  # Assign this job to the deploy stage
+  script:
+    - echo "Deploying to production..."  # Placeholder for actual deployment commands

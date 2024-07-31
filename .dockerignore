@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual environment directories
+.env/
+.venv/
+
+# Editor directories
+.vscode/
+.idea/
+
+# Log files
+*.log
+
+# Environment variable files
+*.env
+
+# macOS system files
+.DS_Store
+
+# Python egg metadata directories
+*.egg-info/
+.eggs/
+
+# Git directory (optional, usually not needed)
+.git/

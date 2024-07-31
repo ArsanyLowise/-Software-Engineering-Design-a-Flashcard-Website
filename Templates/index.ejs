@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Trivia Quiz</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .add-flashcard-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .flashcard {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .flashcard h2 {
+            font-size: 16px; /* Decreased font size */
+            margin: 10px 0;
+        }
+        .result {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .next-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .progress {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin: 5px 0;
+            font-size: 14px; /* Decreased font size */
+        }
+        .flashcard form {
+            margin: 0;
+        }
+        .option.correct {
+            color: green;
+        }
+        .option.incorrect {
+            color: red;
+        }
+        .show-answer-button {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+        function checkAnswerInstantly(cardId) {
+            const form = document.getElementById('form-' + cardId);
+            const formData = new FormData(form);
+            fetch('/check_answer', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result-' + cardId);
+                const options = form.getElementsByTagName('label');
+                if (data.is_correct) {
+                    resultDiv.textContent = 'Correct!';
+                    resultDiv.style.color = 'green';
+                } else {
+                    resultDiv.textContent = 'Incorrect!';
+                    resultDiv.style.color = 'red';
+                }
+                Array.from(options).forEach(option => {
+                    if (option.querySelector('input').value === data.selected_option) {
+                        option.classList.add(data.is_correct ? 'correct' : 'incorrect');
+                    } else {
+                        option.classList.remove('correct', 'incorrect');
+                    }
+                });
+            });
+        }
+
+        function showCorrectAnswer(cardId) {
+            const form = document.getElementById('form-' + cardId);
+            const formData = new FormData(form);
+            formData.append('show_correct', 'true');
+            fetch('/show_correct_answer', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultDiv = document.getElementById('result-' + cardId);
+                const options = form.getElementsByTagName('label');
+                resultDiv.textContent = 'Correct answer is: ' + data.correct_answer;
+                resultDiv.style.color = 'blue';
+                Array.from(options).forEach(option => {
+                    if (option.querySelector('input').value === data.correct_answer) {
+                        option.classList.add('correct');
+                    } else {
+                        option.classList.remove('correct', 'incorrect');
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.querySelectorAll('input[type=radio][name=option]').forEach((radio) => {
+                radio.addEventListener('change', (event) => {
+                    const cardId = event.target.closest('form').id.split('-')[1];
+                    checkAnswerInstantly(cardId);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <button class="logout-button" onclick="location.href='/logout'">Logout</button>
+    <button class="add-flashcard-button" onclick="location.href='/add_flashcard'">Add Flashcard</button>
+    <div class="container">
+        <h1>Quiz</h1>
+        <div class="flashcard">
+            <div class="category">
+                <h2>{{flashcard['Category'] }}</h2>
+            </div>
+            <h2>{{flashcard['Question'] }}?</h2>
+            <form id="form-{{flashcard['_id']}}">
+                <input type="hidden" name="card_id" value="{{flashcard['_id']}}">
+                <label><input type="radio" name="option" value="{{flashcard['Choice1'] }}"> {{flashcard['Choice1'] }}</label>
+                <label><input type="radio" name="option" value="{{flashcard['Choice2'] }}"> {{flashcard['Choice2'] }}</label>
+                <label><input type="radio" name="option" value="{{flashcard['Choice3'] }}"> {{flashcard['Choice3'] }}</label>
+                <label><input type="radio" name="option" value="{{flashcard['Choice4'] }}"> {{flashcard['Choice4'] }}</label>
+                <button type="button" class="show-answer-button" onclick="showCorrectAnswer('{{flashcard['_id']}}')">Show Correct Answer</button>
+            </form>
+            <div id="result-{{flashcard['_id']}}" class="result"></div>
+        </div>
+        <button class="next-button" onclick="location.href='/next_flashcard'">Next</button>
+        <div class="progress">
+            Flashcard {{current}} of {{total}}
+        </div>
+    </div>
+</body>
+</html>

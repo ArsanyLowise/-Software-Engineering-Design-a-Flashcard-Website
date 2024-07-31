@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <h1>Quiz</h1>
+    <ul>
+        <% flashcards.forEach(function(flashcard, index) { %>
+            <li>
+                <div>
+                    <b>Q:</b> <%= flashcard.question %>
+                    <button onclick="toggleAnswer(<%= index %>)">Show/Hide Answer</button>
+                    <div id="answer-<%= index %>" style="display: none;"><b>A:</b> <%= flashcard.answer %></div>
+                </div>
+            </li>
+        <% }); %>
+    </ul>
+    <a href="/">Back to Home</a>
+    <script>
+        function toggleAnswer(index) {
+            const answerDiv = document.getElementById('answer-' + index);
+            if (answerDiv.style.display === 'none') {
+                answerDiv.style.display = 'block';
+            } else {
+                answerDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
+

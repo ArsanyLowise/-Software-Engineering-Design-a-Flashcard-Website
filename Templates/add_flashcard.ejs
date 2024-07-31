@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Flashcard</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Flashcard</h1>
+        <form method="POST" action="/add_flashcard">
+            <div class="form-group">
+                <label for="question">Question:</label>
+                <input type="text" id="question" name="question" required>
+            </div>
+            <div class="form-group">
+                <label for="choice1">Choice 1:</label>
+                <input type="text" id="choice1" name="choice1" required>
+            </div>
+            <div class="form-group">
+                <label for="choice2">Choice 2:</label>
+                <input type="text" id="choice2" name="choice2" required>
+            </div>
+            <div class="form-group">
+                <label for="choice3">Choice 3:</label>
+                <input type="text" id="choice3" name="choice3" required>
+            </div>
+            <div class="form-group">
+                <label for="choice4">Choice 4:</label>
+                <input type="text" id="choice4" name="choice4" required>
+            </div>
+            <div class="form-group">
+                <label for="correct_answer">Correct Answer:</label>
+                <input type="text" id="correct_answer" name="correct_answer" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category:</label>
+                <input type="text" id="category" name="category" required>
+            </div>
+            <button type="submit" class="submit-button">Add Flashcard</button>
+        </form>
+    </div>
+</body>
+</html>
